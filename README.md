@@ -15,6 +15,17 @@ curl --request POST \
     "password": "password@123"
   }'
 
+curl -i -L --request POST \
+  --url https://backend-express-postgresql-seven.vercel.app/users/register \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "name": "username example",
+    "username": "username-example",
+    "email": "username@gmail.com",
+    "password": "password@123"
+  }'
+
+
 # JSON Web Tokens
 https://www.npmjs.com/package/jsonwebtoken
 - add no package.json "generate-secret-key": "node -e \"console.log(require('crypto').randomBytes(64).toString('hex'))\"" e rodar "npm run generate-secret-key"

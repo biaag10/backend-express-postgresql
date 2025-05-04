@@ -3,6 +3,9 @@ import { Sequelize } from 'sequelize';
 import User from './User.js';
 import pg from 'pg';
 
+// Verificar se o ambiente é produção (Vercel)
+const isProduction = process.env.NODE_ENV === 'production';
+
 const sequelize = new Sequelize(
     dbConfig.database,
     dbConfig.user,
@@ -12,12 +15,9 @@ const sequelize = new Sequelize(
     dialect: dbConfig.dialect,
     port: dbConfig.port,
     dialectModule: pg,
-    // dialectOptions: {
-    //   ssl: {
-    //     require: true,
-    //     rejectUnauthorized: false
-    //   }
-    // },
+    dialectOptions: isProduction
+      ? { ssl: { require: true, rejectUnauthorized: false } }  // SSL apenas em produção
+      : {},  // Sem SSL localmente
     pool: {
       max: dbConfig.pool.max,
       min: dbConfig.pool.min,
