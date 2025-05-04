@@ -6,11 +6,13 @@ https://renatogroffe.medium.com/postgresql-docker-compose-criando-rapidamente-am
 
 # teste com vercel
 curl --request POST \
-  --url https://express-backend-mongodb.vercel.app/users/register \
+  --url backend-express-postgresql-seven.vercel.app/users/register \
   --header 'Content-Type: application/json' \
   --data '{
+    "name": "username example",
     "username": "username-example",
-    "password": "password-example"
+    "email": "username@gmail.com",
+    "password": "password@123"
   }'
 
 # JSON Web Tokens
