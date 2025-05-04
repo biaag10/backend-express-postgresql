@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import db from '../models/index.js'; 
+import { Op } from 'sequelize';
 
 // Função para registrar um novo usuário
 const register = async (name, username, email, password) => {
