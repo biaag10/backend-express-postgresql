@@ -1,8 +1,8 @@
-# backend-express-mongodb
-# Atividade Avaliativa IV.v2: Backend em Express com Autenticação (JWT) e MongoDB em produção
+# backend-express-postgresql
+# Atividade Avaliativa IV.v2: Backend em Express com Autenticação (JWT) e PostgreSQL em produção
 
-# Mongo 
-https://hub.docker.com/_/mongo
+# PostgreSQL 
+https://renatogroffe.medium.com/postgresql-docker-compose-criando-rapidamente-ambientes-e-populando-bases-para-testes-6c4b9a4de313
 
 # Mongo Express
 https://opulent-pancake-9r7rjvrqx95c79rr-8081.app.github.dev/db/mydatabase/

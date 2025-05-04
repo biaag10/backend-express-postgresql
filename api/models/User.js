@@ -1,32 +1,35 @@
-import mongoose from 'mongoose';
-
 // modelo de usuário
-const UserSchema = new mongoose.Schema(
-  {
+export default(sequelize, Sequelize) => {
+  const User = sequelize.define('user', {
+    id: {
+      type: Sequelize.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
     name: {
-      type: String,
-      required: true,
+      type: Sequelize.STRING,
+      allowNull: false,
     },
     username: {
-      type: String,
-      required: true,  
+      type: Sequelize.STRING,
+      allowNull: false,
       unique: true, // garante que o nome de usuário seja único
     },
     email: {
-      type: String,
-      required: true,
+      type: Sequelize.STRING,
+      allowNull: false,
       unique: true, // garante que o email seja único
-      match: [/^\S+@\S+\.\S+$/, 'Email inválido'], // validação de formato de email
+      validate: {
+        isEmail: true, // validação de formato de email
+      },
     },
     password: {
-      type: String,
-      required: true,
-      select: false, // não retorna a senha ao buscar usuários
+      type: Sequelize.STRING,
+      allowNull: false,
     }
-  },
-  { timestamps: true } // adiciona os campos de createdAt e updatedAt
-);
+  }, {
+    timestamps: true, // adiciona os campos de createdAt e updatedAt
+  });
 
-const User = mongoose.model('User', UserSchema);
-
-export default User;
+  return User;
+}

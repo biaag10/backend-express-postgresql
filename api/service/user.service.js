@@ -1,23 +1,28 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import User from '../models/User.js';
+import db from '../models/index.js'; 
 
 // Função para registrar um novo usuário
 const register = async (name, username, email, password) => {
-    // validação de formato de email
+    // Validação de formato de email
     const emailRegex = /^\S+@\S+\.\S+$/;
     if (!email.match(emailRegex)) {
         throw new Error('Formato de e-mail inválido');
     }
 
-    // validação de formato de senha (mínimo 8 caracteres, 1 maiúscula, 1 número, 1 especial)
+    // Validação de formato de senha (mínimo 8 caracteres, 1 maiúscula, 1 número, 1 especial)
     const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     if (!password.match(passwordRegex)) {
         throw new Error('A senha deve ter no mínimo 8 caracteres, uma letra maiúscula, um número e um caractere especial');
     }
 
     // Verifica se o e-mail ou o nome de usuário já existem
-    const userExists = await User.findOne({ $or: [{ email }, { username }] });
+    const userExists = await db.users.findOne({ 
+        where: {
+            [Op.or]: [{ email }, { username }]
+        }
+    });
+
     if (userExists) {
         throw new Error('E-mail ou nome de usuário já existe');
     }
@@ -28,7 +33,7 @@ const register = async (name, username, email, password) => {
 
     try {
         // Criação do usuário no banco de dados
-        const newUser = await User.create({
+        const newUser = await db.users.create({
             name,
             username,
             email,
@@ -42,7 +47,11 @@ const register = async (name, username, email, password) => {
 
 // Função para fazer login e gerar o token
 const login = async (usernameOrEmail, password) => {
-    const user = await User.findOne({ $or: [{ username: usernameOrEmail }, { email: usernameOrEmail }] }).select('+password');
+    const user = await db.users.findOne({
+        where: {
+            [Op.or]: [{ username: usernameOrEmail }, { email: usernameOrEmail }]
+        }
+    });
 
     if (!user) {
         throw new Error('E-mail ou nome de usuário inválido');
@@ -54,7 +63,7 @@ const login = async (usernameOrEmail, password) => {
     }
 
     // Criação do token JWT
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
     return token;
 };
 

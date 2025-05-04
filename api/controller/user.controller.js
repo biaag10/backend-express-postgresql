@@ -13,12 +13,11 @@ const register = async (req, res) => {
         return res.status(201).json({ message: 'Usuário registrado com sucesso', user: newUser });
     } catch (error) {
         console.error('Erro ao registrar o usuário:', error);
-        return res.status(400).json({ message: error.message });
+        return res.status(400).json({ message: error.message || 'Erro desconhecido ao registrar o usuário' });
     }
 };
 
 // Função de login
-// loga com email ou username
 const login = async (req, res) => {
     const { username, email, password } = req.body;
 
@@ -32,7 +31,7 @@ const login = async (req, res) => {
         return res.status(200).json({ message: 'Login bem-sucedido', token });
     } catch (error) {
         console.error('Erro no login:', error);
-        return res.status(401).json({ message: error.message });
+        return res.status(401).json({ message: error.message || 'Erro desconhecido ao tentar fazer login' });
     }
 };
 

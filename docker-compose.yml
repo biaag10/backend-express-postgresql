@@ -1,28 +1,42 @@
-# Use root/example as user/password credentials
-# https://hub.docker.com/_/mongo
-# docker ps (mostra os containers em execução)
-
-version: '3.1'
-
 services:
-
-  mongo:
-    image: mongo # MongoDB image - banco de sados
-    restart: always
-    ports:
-      - 27017:27017 # a porta 27017 do container será mapeada para a porta 27017 do host 
+  postgres:
+    container_name: postgres_container
+    image: postgres
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
-
-  mongo-express:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-postgres}
+      PGDATA: /data/postgres
+    volumes:
+       - postgres:/data/postgres
+    ports:
+      - "5432:${POSTGRES_PORT-5432}"
+    networks:
+      - postgres
+    restart: unless-stopped
   
-    image: mongo-express # interface gráfica visual web para acessar o mongo db
-    restart: always
-    ports:
-      - 8081:8081 # a porta 8081 do container será mapeada para a porta 8081 do host
+  pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4
     environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: example
-      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/ # mesmo nome que foi dado a imagem do mongo
-      ME_CONFIG_BASICAUTH: false
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_CONFIG_PROXY_X_HOST_COUNT: 1
+      PGADMIN_CONFIG_PROXY_X_PREFIX_COUNT: 1
+    volumes:
+       - pgadmin:/var/lib/pgadmin
+
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    networks:
+      - postgres
+    restart: unless-stopped
+
+networks:
+  postgres:
+    driver: bridge
+
+volumes:
+    postgres:
+    pgadmin:

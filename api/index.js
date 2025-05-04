@@ -1,12 +1,19 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import db from './database/configdb.js';
+import db from './models/index.js'; // importa a configuração do banco de dados
 import userRoutes from './routes/user.route.js'; // importa as rotas de usuário
-import User from './models/User.js'; // cria a collection de users
+// import User from './models/User.js'; // cria a collection de users
 import exampleRoute from './routes/protected.route.js'; 
 
-dotenv.config();
-db.connect();
+// dotenv.config();
+
+db.sequelize.sync({ force: false }) // sincroniza o banco de dados
+  .then(() => {
+    console.log('Banco de dados sincronizado com sucesso.');
+  })
+  .catch((error) => {
+    console.error('Erro ao sincronizar o banco de dados:', error);
+  });
 
 const app = express();
 app.use(express.json()); // para aceitar JSON no corpo das requisições
